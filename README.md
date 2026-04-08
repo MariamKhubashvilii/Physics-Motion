@@ -1,122 +1,110 @@
-# Hand-Controlled Spring Simulator
+# Motion and Free Fall Physics Simulator with Hand Tracking
 
-A Python spring simulation you can control with **hand gestures** through your webcam.
+A Python project about motion, free fall, and basic physics concepts, controlled with webcam hand tracking.
 
-This project combines:
-- **OpenCV** for webcam input and on-screen rendering
-- **MediaPipe** for hand tracking
-- **Tkinter** for live controls
-- **Matplotlib** for analytics charts
-- a custom **spring physics engine** for displacement, velocity, force, and energy
+The simulator lets you create and move objects in real time while showing how gravity, speed, bouncing, and energy change during motion.
 
-The result is an interactive mass-spring system where you can drag the mass with your finger, pause the simulation, reset it, switch orientation, and adjust the spring stiffness with a pinch gesture.
+The app uses your webcam to detect your hand, turns simple hand poses into gestures, and lets you interact with moving objects on screen.
+
+It is meant to make physics topics like falling, throwing, bouncing, velocity, and energy easier to see.
 
 ## Features
 
-- Real-time webcam hand tracking
-- Gesture-based spring control
-- Live spring simulation with damping
-- Vertical and horizontal spring modes
-- On-screen physics HUD
-- Separate control panel with sliders and buttons
-- Live charts for:
-  - displacement vs time
-  - velocity vs time
-  - kinetic energy vs time
-  - potential energy vs time
-  - total energy vs time
-  - phase diagram
+* Real-time hand tracking with MediaPipe
+* Gesture-based controls
+* Spawn, grab, throw, and delete objects
+* Motion based on gravity and free fall
+* Basic bouncing and ground friction
+* Object collisions
+* Toggle between 2D and 3D views
+* On-screen display for gesture, mode, speed, kinetic energy, and potential energy
+* Motion trails to help visualize movement over time
 
 ## Demo Controls
 
-### Hand Gestures
-- **Point**: drag the mass
-- **Peace sign**: switch between vertical and horizontal mode
-- **Open palm**: pause or resume the simulation
-- **Fist**: reset the simulation
-- **Pinch and move up/down**: increase or decrease the spring constant `k`
+The simulator recognizes these gestures:
 
-### Control Panel
-You can also adjust the simulation manually with the Tkinter control panel:
-- `k` - spring constant
-- `m` - mass
-- `b` - damping coefficient
-- `A` - initial amplitude
-
-You can also:
-- pause/resume
-- reset
-- toggle orientation
-
-## How It Works
-
-The physics engine models a damped spring using:
-
-`F = -kx - bv`
-
-Where:
-- `k` is the spring constant
-- `x` is displacement
-- `b` is damping
-- `v` is velocity
-
-Acceleration is computed from Newton's second law:
-
-`a = F / m`
-
-The simulation then updates:
-- acceleration
-- velocity
-- displacement
-- time
-- energy values
-- work done
-
-The renderer visualizes the spring, mass, displacement, velocity, and stress level.  
-The chart window stores recent history and plots the motion in real time.
+* **Point** - grab and throw an object
+* **Pinch** - spawn a new object
+* **Fist** - delete the nearest object
+* **Open palm** - pause or resume the simulation
+* **Peace sign** - toggle between 2D and 3D mode
+* **Q key** - quit the app
 
 ## Project Structure
 
 ```text
 .
 ├── main.py
-├── spring_engine.py
-├── spring_renderer.py
 ├── hand_tracker.py
 ├── gestures.py
-├── control_panel.py
-├── charts_window.py
+├── physics_engine.py
+├── renderer.py
 └── README.md
 ```
 
 ### File Overview
 
-- `main.py` - main loop that connects camera input, gestures, physics, rendering, charts, and controls
-- `spring_engine.py` - spring physics engine
-- `spring_renderer.py` - OpenCV rendering for the spring, mass, arrows, HUD, and legend
-- `hand_tracker.py` - MediaPipe-based hand tracking
-- `gestures.py` - gesture recognition logic from hand landmarks
-- `control_panel.py` - Tkinter control panel for live parameter changes
-- `charts_window.py` - Matplotlib analytics window
+* **main.py** - Runs the webcam loop, processes gestures, updates physics, and renders the simulation
+* **hand_tracker.py** - Detects hands and returns landmark coordinates using MediaPipe
+* **gestures.py** - Converts hand landmarks into gesture labels such as `point`, `pinch`, and `fist`
+* **physics_engine.py** - Handles object motion, gravity, collisions, bounce, and friction
+* **renderer.py** - Draws objects, trails, vectors, stats, and the HUD on screen
+
+## What Physics Ideas It Shows
+
+This project is mainly about motion.
+
+It helps show ideas like:
+
+* free fall
+* gravity
+* velocity
+* acceleration
+* bouncing
+* friction
+* kinetic energy
+* potential energy
+* collisions
+
+Instead of only reading about these ideas, you can see them happen on screen and interact with them.
+
+## How It Works
+
+1. The webcam captures a video frame.
+2. The program detects your hand landmarks.
+3. The gesture system decides which hand pose you are making.
+4. That gesture triggers an action, like creating, grabbing, throwing, or deleting an object.
+5. The physics engine updates the motion of all objects.
+6. The renderer draws the updated scene, vectors, and physics values.
+7. The result is shown in an OpenCV window.
+
+## Requirements
+
+* Python 3.10 or newer recommended
+* A working webcam
+* macOS, Windows, or Linux
 
 ## Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/your-username/hand-tracking-physics-simulator.git
+cd hand-tracking-physics-simulator
 ```
 
 ### 2. Create and activate a virtual environment
 
 #### macOS / Linux
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
 #### Windows
+
 ```bash
 python -m venv venv
 venv\Scripts\activate
@@ -125,10 +113,8 @@ venv\Scripts\activate
 ### 3. Install dependencies
 
 ```bash
-pip install opencv-python mediapipe matplotlib numpy
+pip install opencv-python mediapipe numpy
 ```
-
-Tkinter usually comes with Python. If it is missing on your system, install it separately using your OS package manager or Python distribution tools.
 
 ## Run the Project
 
@@ -136,42 +122,39 @@ Tkinter usually comes with Python. If it is missing on your system, install it s
 python main.py
 ```
 
-Make sure your webcam is connected and available.
+If that does not work on your system, try:
 
-## Requirements
-
-- Python 3.10+ recommended
-- Webcam
-- Good lighting for hand tracking
-
-Python packages:
-- `opencv-python`
-- `mediapipe`
-- `matplotlib`
-- `numpy`
-- `tkinter` (usually bundled with Python)
+```bash
+python3 main.py
+```
 
 ## Notes
 
-- The simulation uses **damping**, so the motion gradually dies out unless you keep interacting with it.
-- The model is visually scaled for screen coordinates, so it is best viewed as an educational interactive simulation rather than a physically calibrated real-world system.
-- Only the first detected hand is currently used for control.
-- Gesture detection may behave differently depending on hand orientation and lighting conditions.
+* The webcam view is mirrored, so movement feels more natural.
+* Right now, the simulator uses the first detected hand.
+* Gesture detection is based on simple rules, so lighting, camera angle, and hand position can affect accuracy.
+* The 3D mode is a simple depth effect to help visualize motion. It is not a full 3D engine.
+* This project is best seen as an interactive physics demo, not a fully realistic physics simulator.
 
 ## Known Limitations
 
-- Release velocity is not yet calculated from hand motion, so there is no true flick behavior when letting go.
-- Thumb detection is simpler than the other fingers and may be less reliable depending on the hand used.
-- The force shown in the HUD is slightly simplified compared with the full damped force used internally.
+* Thumb detection is simplified and may be less reliable for different hand orientations
+* Pinch detection uses a fixed pixel distance threshold
+* Object grabbing directly sets object position instead of applying a physical constraint
+* The red arrow shown on screen represents gravity direction, not the exact current net force vector
 
-## Future Improvements
+## Possible Improvements
 
-- Add hand release velocity for more natural motion
-- Improve left-hand and right-hand gesture detection
-- Add gesture smoothing
-- Add multiple spring presets
-- Add 3D visualization mode
-- Save chart data to CSV
-- Add fullscreen mode or a cleaner app layout
+* Make the hand gestures more stable and reliable
+* Add sliders for gravity, friction, or bounce strength
+* Show acceleration more accurately on screen
+* Add a mode focused only on vectors and motion graphs
+* Add more physics topics, like projectile motion or spring motion
+* Add a non-camera mode for keyboard or mouse interaction
 
-Built with Python, OpenCV, MediaPipe, Tkinter, and Matplotlib.
+## Tech Stack
+
+* Python
+* OpenCV
+* MediaPipe
+* NumPy
